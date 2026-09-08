@@ -1,0 +1,31 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Pull the repository code into the runner
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 2. Install uv and set up Python with automatic caching
+    - name: Set up uv
+      uses: astral-sh/setup-uv@v5
+      with:
+        enable-cache: true
+        python-version: '3.12' # Change to your preferred Python version
+
+    # 3. Install your project dependencies using uv
+    - name: Install dependencies
+      run: uv sync --all-extras --dev
+
+    # 4. Run your test suite with pytest via uv
+    - name: Run tests
+      run: uv run pytest
